@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f6f8">
+  <title>Haven | Property Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" onclick="page('dashboard'); return false">
+        <span class="brand-mark">H</span>
+        <span class="brand-copy"><strong>haven</strong><small>PROPERTY GROUP</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav active" data-page="dashboard"><span class="nav-icon">⌂</span>Overview</button>
+        <button class="nav" data-page="properties"><span class="nav-icon">▦</span>Properties</button>
+        <button class="nav" data-page="requests"><span class="nav-icon">↗</span>Inquiries<span class="nav-count" id="requestCount">0</span></button>
+        <button class="nav" data-page="bookings"><span class="nav-icon">▤</span>Bookings</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="status-card">
+          <span class="status-dot"></span>
+          <span><strong id="status">Connecting...</strong><small>Property database</small></span>
+        </div>
+        <div class="profile">
+          <div class="avatar avatar-dark">TH</div>
+          <div><strong>Team Haven</strong><small>Administrator</small></div>
+          <span class="profile-menu">···</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Workspace</span><i>/</i><strong id="breadcrumb">Overview</strong></div>
+        <div class="topbar-right">
+          <span class="today" id="today"></span>
+          <span class="avatar">TH</span>
+        </div>
+      </header>
+
+      <main class="content">
+        <section id="dashboard" class="page active">
+          <div class="page-heading dashboard-heading">
+            <div><p class="eyebrow">PORTFOLIO OVERVIEW</p><h1>Your properties, at a glance.</h1><p class="subheading">A clear view of your inventory and client activity.</p></div>
+            <button class="button button-primary" onclick="page('add')"><span>＋</span> Add a property</button>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card"><div class="stat-top"><span>Total properties</span><span class="stat-icon">▦</span></div><strong id="tp">—</strong><small>Across your portfolio</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Available</span><span class="stat-icon green">⌂</span></div><strong id="ap">—</strong><small>Ready for a new client</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Open inquiries</span><span class="stat-icon amber">↗</span></div><strong id="rq">—</strong><small>Awaiting follow-up</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Active bookings</span><span class="stat-icon blue">▤</span></div><strong id="bk">—</strong><small>Confirmed reservations</small></article>
+          </div>
+
+          <section class="panel inventory-panel">
+            <div class="panel-heading"><div><h2>Property inventory</h2><p>Your latest listings and availability</p></div><button class="button button-quiet" onclick="page('properties')">View all properties <span>→</span></button></div>
+            <div id="dashboardGrid" class="property-grid dashboard-grid"></div>
+          </section>
+          <div class="dashboard-bottom">
+            <section class="panel welcome-panel"><div class="welcome-icon">✦</div><div><h2>Everything in one place</h2><p>Keep property details, client inquiries, and bookings organized from your workspace.</p><button class="text-button" onclick="page('properties')">Manage your portfolio <span>→</span></button></div></section>
+            <section class="panel shortcut-panel"><p class="eyebrow">QUICK ACTION</p><h2>Have a new listing?</h2><p>Add its details to make it available in your property directory.</p><button class="button button-secondary" onclick="page('add')">Add property <span>＋</span></button></section>
+          </div>
+        </section>
+
+        <section id="properties" class="page">
+          <div class="page-heading"><div><p class="eyebrow">PORTFOLIO</p><h1>Properties</h1><p class="subheading">Browse and manage your property inventory.</p></div><button class="button button-primary" onclick="page('add')"><span>＋</span> Add a property</button></div>
+          <div class="toolbar">
+            <label class="search-field"><span>⌕</span><input id="sid" placeholder="Search by property, location or ID" oninput="filterProps()"></label>
+            <select id="typeFilter" aria-label="Filter by property type" onchange="filterProps()"><option value="">All property types</option><option>Apartment</option><option>Villa</option><option>Plot</option><option>House</option><option>Commercial</option></select>
+            <select id="availabilityFilter" aria-label="Filter by availability" onchange="filterProps()"><option value="">Any availability</option><option value="true">Available</option><option value="false">Booked</option></select>
+          </div>
+          <div id="result"></div><div id="grid" class="property-grid"></div>
+        </section>
+
+        <section id="add" class="page">
+          <div class="page-heading"><div><p class="eyebrow">PORTFOLIO</p><h1>Add a property</h1><p class="subheading">Create a complete listing for your property directory.</p></div></div>
+          <form id="propForm" class="form-panel">
+            <div class="form-section-title"><span class="section-number">01</span><div><h2>Property details</h2><p>Enter the essential details of this listing.</p></div></div>
+            <div class="formgrid">
+              <label>Property ID<input name="id" required placeholder="e.g. RE106"></label>
+              <label>Property type<select name="type"><option>Apartment</option><option>Villa</option><option>Plot</option><option>House</option><option>Commercial</option></select></label>
+              <label class="field-wide">Location<input name="location" required placeholder="City, neighbourhood"></label>
+              <label>Owner name<input name="owner" required placeholder="Property owner"></label>
+              <label>Availability<select name="available"><option value="true">Available</option><option value="false">Booked</option></select></label>
+            </div>
+            <div class="form-section-title form-section-spaced"><span class="section-number">02</span><div><h2>Pricing and size</h2><p>Set the asking price and property area.</p></div></div>
+            <div class="formgrid">
+              <label>Price (₹)<input name="price" type="number" min="0" required placeholder="e.g. 6500000"></label>
+              <label>Area (sq. ft.)<input name="area" type="number" min="0" required placeholder="e.g. 1200"></label>
+            </div>
+            <div class="form-actions"><button type="button" class="button button-quiet" onclick="page('properties')">Cancel</button><button type="submit" class="button button-primary">Save property <span>→</span></button></div>
+          </form>
+        </section>
+
+        <section id="requests" class="page">
+          <div class="page-heading"><div><p class="eyebrow">CLIENT RELATIONS</p><h1>Inquiries</h1><p class="subheading">Keep track of viewing requests and client follow-ups.</p></div><button class="button button-primary" onclick="document.getElementById('customer').focus()"><span>＋</span> Add inquiry</button></div>
+          <form id="reqForm" class="inline-form">
+            <div class="inline-form-heading"><div><h2>New inquiry</h2><p>Capture a client's interest in a property.</p></div><span class="form-tag">CLIENT DETAILS</span></div>
+            <div class="formgrid">
+              <label>Client name<input id="customer" name="customer" required placeholder="Full name"></label>
+              <label>Phone number<input name="phone" type="tel" placeholder="Contact number"></label>
+              <label>Property ID<input name="propertyId" required placeholder="e.g. RE101"></label>
+              <label>Note<input name="message" placeholder="Viewing request or other details"></label>
+            </div>
+            <div class="form-actions"><button type="submit" class="button button-primary">Save inquiry <span>→</span></button></div>
+          </form>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Inquiry inbox</h2><p>Requests in the order they were received</p></div><button class="button button-secondary" onclick="processReq()">Mark next as handled</button></div><div id="requestsTable" class="table"></div></section>
+        </section>
+
+        <section id="bookings" class="page">
+          <div class="page-heading"><div><p class="eyebrow">CLIENT RELATIONS</p><h1>Bookings</h1><p class="subheading">Review confirmed property reservations.</p></div></div>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Booking history</h2><p>Recently confirmed reservations</p></div><button class="button button-quiet button-danger" onclick="cancelLatest()">Cancel latest booking</button></div><div id="bookingsTable" class="table"></div></section>
+          <p class="table-footnote">Cancelling a booking will release the property and make it available again.</p>
+        </section>
+      </main>
+      <footer class="footer"><span>Haven Property Group</span><span>Property management workspace</span></footer>
+    </div>
+  </div>
+
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" onclick="closeModal()"></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" onclick="closeModal()" aria-label="Close">×</button>
+      <p class="eyebrow">CLIENT RELATIONS</p><h2 id="modalTitle"></h2><p id="modalDescription" class="subheading"></p>
+      <form id="modalForm"><div id="modalFields" class="modal-fields"></div><div class="form-actions"><button class="button button-quiet" type="button" onclick="closeModal()">Cancel</button><button class="button button-primary" type="submit" id="modalSubmit">Confirm</button></div></form>
+    </section>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
